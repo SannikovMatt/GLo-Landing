@@ -11,10 +11,10 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
 
-
+            let clearTimer;
         function clockUpdate() {
 
-            let clearTimer;
+            
             if (clearTimer === undefined) {
                 clearTimer = setInterval(clockUpdate, 500);
             }

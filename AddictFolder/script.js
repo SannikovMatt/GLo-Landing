@@ -10,6 +10,8 @@ window.addEventListener('DOMContentLoaded', function () {
             time = document.querySelector('#time'),
             newYear = document.querySelector('#new_year');
 
+            let clearTimer;
+
 
         function getDayPart(time) {
             let dayParts = ['утро', 'день', 'вечер', 'ночи'];
@@ -32,10 +34,10 @@ window.addEventListener('DOMContentLoaded', function () {
 
         }
 
+
         function clockUpdate() {
 
-            let clearTimer,
-                today = new Date(),
+           let today = new Date(),
                 diference = new Date('2020/12/31') - today,
                 weekParts = [
                     'Воскресенье',
@@ -59,7 +61,7 @@ window.addEventListener('DOMContentLoaded', function () {
             day.innerHTML = 'Сегодня: ' + weekParts[today.getDay()];
             time.innerHTML = 'Текущее время: ' + today.toLocaleTimeString();
             newYear.innerHTML = 'До нового года осталось: ' + diference.getDate();
-
+            console.log(clearTimer);
 
         }
         clockUpdate();
