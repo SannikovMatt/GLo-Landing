@@ -51,40 +51,41 @@ window.addEventListener('DOMContentLoaded', function () {
 
     //Menu
     const toggleMenu = () => {
-        let menu = document.querySelector('menu');
-
-        const handlerMenu = () => {
-            menu.classList.toggle('active-menu');
-        };
-
-        const reachTo = (elm) => {
-            const id = elm.getAttribute("href"),
-                elem = document.querySelector(`${id}`);
-
-
-
-            let stopScroll,
-                counter = 0;
-
-            function startMove() {
-
-                if (document.documentElement.scrollTop > elem.offsetTop) {
-                    cancelAnimationFrame(stopScroll);
-                    return;
-                }
-                document.documentElement.scrollTop = counter;
-                counter += parseInt((elem.offsetTop - counter) / 7 + 1);
-                stopScroll = requestAnimationFrame(startMove);
-            }
-            startMove();
-        };
 
         document.body.addEventListener('click', (e) => {
+            let menu = document.querySelector('menu');
 
             let target = e.target;
-            menu = document.querySelector('menu');
+            //Функция скрывающая меню
+            const handlerMenu = () => {
+                menu.classList.toggle('active-menu');
+            };
+            //Функция для скролла к елементам
+            const reachTo = (elm) => {
+                const id = elm.getAttribute("href"),
+                    elem = document.querySelector(`${id}`);
 
 
+
+                let stopScroll,
+                    counter = 0;
+
+                function startMove() {
+
+                    if (document.documentElement.scrollTop > elem.offsetTop) {
+                        cancelAnimationFrame(stopScroll);
+                        return;
+                    }
+                    document.documentElement.scrollTop = counter;
+                    counter += parseInt((elem.offsetTop - counter) / 7 + 1);
+                    stopScroll = requestAnimationFrame(startMove);
+                }
+                startMove();
+            };
+
+
+
+            //Проверяем если клик был вне модального окна
             if (!target.closest('menu')) {
                 menu = document.querySelector('menu');
 
@@ -92,15 +93,16 @@ window.addEventListener('DOMContentLoaded', function () {
                     handlerMenu();
                 }
             }
+            //Выводим модальное окно ро клику на (МЕНЮ)
             if (target.closest('.menu')) {
 
                 if (target.closest('.menu')) {
 
                     handlerMenu();
                 }
-               
-            }
 
+            }
+            //Плавный скрол по разделам меню
             if (target.closest('menu')) {
 
 
@@ -114,15 +116,14 @@ window.addEventListener('DOMContentLoaded', function () {
                     reachTo(target.closest('a'));
                 }
             }
-
-
-            if(target.closest('a').getAttribute('href') === '#service-block'){
+            //Плавный скрол для кнопки вне модального меню
+            if (target.closest('a').getAttribute('href') === '#service-block') {
                 if (menu.classList.contains('active-menu')) { handlerMenu(); }
                 reachTo(target.closest('a'));
-            }
-
-
-        });
+            }  
+       
+       
+        });//ОБРАБОТЧИК КЛИКОВ МЕНЮ
     };
     toggleMenu();
 
