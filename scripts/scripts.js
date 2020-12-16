@@ -9,55 +9,46 @@ window.addEventListener('DOMContentLoaded', function () {
             timerMinutes = document.querySelector('#timer-minutes'),
             timerSeconds = document.querySelector('#timer-seconds');
 
+        function getTimeRamining() {
 
+            let dateStop = new Date(deadLine).getTime(),
+                dateNow = new Date().getTime(),
+                timeRemaining = (dateStop - dateNow) / 1000,
+                seconds = Math.floor(timeRemaining % 60),
+                min = Math.floor((timeRemaining / 60) % 60),
+                hours = Math.floor(timeRemaining / 60 / 60);
 
-        let clearTimer;
-        function clockUpdate() {
+            seconds < 9 ? seconds = '0' + seconds : seconds;
+            min < 9 ? min = '0' + min : min;
+            hours < 9 ? hours = '0' + hours : hours;
 
+            return { timeRemaining, hours, min, seconds };
 
-            if (clearTimer === undefined) {
-                clearTimer = setInterval(clockUpdate, 500);
+        }
+
+        function updateClock() {
+
+            let timer = getTimeRamining();
+
+            if (timer.timeRemaining > 0) {
+                timerHours.innerHTML = timer.hours;
+                timerMinutes.innerHTML = timer.min;
+                timerSeconds.innerHTML = timer.seconds;
+
+                setTimeout(updateClock, 1000);
             }
-
-
-            let diference = new Date(deadLine) - new Date();
-
-
-            if (diference < 0) {
+            else {
                 timerHours.innerHTML = '00';
                 timerMinutes.innerHTML = '00';
                 timerSeconds.innerHTML = '00';
-
-                clearInterval(clearTimer);
-                return;
             }
-            diference = new Date(diference);
-            let hours ;
-            if(diference.getDate()){
-                hours = diference.getDate()*24;
-
-            }
-
-            
-            diference = diference.toLocaleTimeString();
-
-            if(!hours){
-
-                timerHours.innerHTML = diference.substring(0, 2);
-
-            }else{   timerHours.innerHTML = hours + +diference.substring(0, 2); }
-            
-            
-
-
-            timerMinutes.innerHTML = diference.substring(3, 5);
-            timerSeconds.innerHTML = diference.substring(6, 8);
-
-
         }
-        clockUpdate();
+
+        updateClock();
     }
-    countTimer('2020/12/18');
+    countTimer('2020/11/31');
+
+
     //Menu
 
     const toggleMenu = () => {
@@ -68,20 +59,16 @@ window.addEventListener('DOMContentLoaded', function () {
             menuItems = menu.querySelectorAll('ul>li'),
             serviceBlock = document.querySelector('main>a');
 
-        console.log(serviceBlock);
-
 
 
         const handlerMenu = () => {
             menu.classList.toggle('active-menu');
-
         }
 
         const reachTo = (e) => {
-
-            let id = e.target.getAttribute("href") || e.currentTarget.getAttribute("href"),
-                elem = document.querySelector(`${id}`),
-                stopScroll,
+            const id = e.target.getAttribute("href") || e.currentTarget.getAttribute("href"),
+                elem = document.querySelector(`${id}`);
+            let stopScroll,
                 counter = 0;
 
             function startMove() {
@@ -90,29 +77,23 @@ window.addEventListener('DOMContentLoaded', function () {
                     cancelAnimationFrame(stopScroll);
                     return;
                 }
-
-
                 document.documentElement.scrollTop = counter;
                 counter += parseInt((elem.offsetTop - counter) / 7 + 1);
                 stopScroll = requestAnimationFrame(startMove);
             }
             startMove();
-
         }
+
+
+        
         btnMenu.addEventListener('click', handlerMenu);
         btnClose.addEventListener('click', handlerMenu);
-        serviceBlock.addEventListener('click', (e) => {
-
-            reachTo(e);
-
-        });
-
-
-
+        serviceBlock.addEventListener('click', reachTo);
         menuItems.forEach((elem) => {
             elem.addEventListener('click', handlerMenu);
             elem.addEventListener('click', reachTo);
         });
+
 
     };
     toggleMenu();
@@ -125,7 +106,7 @@ window.addEventListener('DOMContentLoaded', function () {
             popupContent = popup.querySelector('.popup-content');
 
         const appearPopUp = () => {
-            let counter = 0;
+            let counter = 1;
             let stopAnim;
             popup.style.display = 'block';
 
@@ -134,18 +115,18 @@ window.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            const comeDown = () => {
-                if (counter === 10) {
+            const comeRight = () => {
+                if (counter >= 38) {
                     cancelAnimationFrame(stopAnim);
                     return;
                 }
 
-                popupContent.style.top = counter + '%';
-                counter += 0.5;
+                popupContent.style.left = counter + '%';
+                counter += (parseInt(popupContent.style.left) - counter) / 7+ 1;
 
-                stopAnim = requestAnimationFrame(comeDown);
+                stopAnim = requestAnimationFrame(comeRight);
             }
-            comeDown();
+            comeRight();
 
 
 
