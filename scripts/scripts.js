@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
         updateClock();
     }
-    countTimer('2021/12/31');
+    countTimer('2020/12/31');
 
 
     //Menu
@@ -84,7 +84,6 @@ window.addEventListener('DOMContentLoaded', function () {
             let target = e.target;
             menu = document.querySelector('menu');
 
-          
 
             if (!target.closest('menu')) {
                 menu = document.querySelector('menu');
@@ -93,23 +92,34 @@ window.addEventListener('DOMContentLoaded', function () {
                     handlerMenu();
                 }
             }
-
             if (target.closest('.menu')) {
 
                 if (target.closest('.menu')) {
 
                     handlerMenu();
                 }
+               
+            }
 
-            } else if (target.closest('.close-btn')) {
-                handlerMenu();
-            } else if (target.closest('a')) {
+            if (target.closest('menu')) {
 
-              
+
+
+                if (target.closest('.close-btn')) {
+                    handlerMenu();
+                } else if (target.closest('a')) {
+
+
+                    if (menu.classList.contains('active-menu')) { handlerMenu(); }
+                    reachTo(target.closest('a'));
+                }
+            }
+
+
+            if(target.closest('a').getAttribute('href') === '#service-block'){
                 if (menu.classList.contains('active-menu')) { handlerMenu(); }
                 reachTo(target.closest('a'));
             }
-
 
 
         });
