@@ -65,8 +65,6 @@ window.addEventListener('DOMContentLoaded', function () {
                 const id = elm.getAttribute("href"),
                     elem = document.querySelector(`${id}`);
 
-
-
                 let stopScroll,
                     counter = 0;
 
@@ -82,7 +80,6 @@ window.addEventListener('DOMContentLoaded', function () {
                 }
                 startMove();
             };
-
 
 
             //Проверяем если клик был вне модального окна
@@ -105,24 +102,20 @@ window.addEventListener('DOMContentLoaded', function () {
             //Плавный скрол по разделам меню
             if (target.closest('menu')) {
 
-
-
                 if (target.closest('.close-btn')) {
                     handlerMenu();
                 } else if (target.closest('a')) {
-
-
                     if (menu.classList.contains('active-menu')) { handlerMenu(); }
                     reachTo(target.closest('a'));
                 }
             }
             //Плавный скрол для кнопки вне модального меню
-            if (target.closest('a').getAttribute('href') === '#service-block') {
+            if (target.closest('main a[href="#service-block"]')) {
                 if (menu.classList.contains('active-menu')) { handlerMenu(); }
                 reachTo(target.closest('a'));
-            }  
-       
-       
+            }
+
+
         });//ОБРАБОТЧИК КЛИКОВ МЕНЮ
     };
     toggleMenu();
@@ -134,14 +127,11 @@ window.addEventListener('DOMContentLoaded', function () {
             popupContent = popup.querySelector('.popup-content');
 
         const appearPopUp = () => {
-            let counter = 1;
+            let counter = 20;
             let stopAnim;
             popup.style.display = 'block';
 
-            if (screen.width < 768) {
-
-                return;
-            }
+            if (screen.width < 768) {return;}
 
             const comeRight = () => {
                 if (counter >= 38) {
@@ -150,7 +140,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 }
 
                 popupContent.style.left = counter + '%';
-                counter += (parseInt(popupContent.style.left) - counter) / 7 + 1;
+                counter += (parseInt(popupContent.style.left) - counter) / 7 +1;
 
                 stopAnim = requestAnimationFrame(comeRight);
             };
@@ -236,6 +226,119 @@ window.addEventListener('DOMContentLoaded', function () {
     tabs();
 
 
+    //Слайдер
+    const slider = () => {
+
+        
+        const slider = document.querySelector('.portfolio-content'),           
+            slide = slider.querySelectorAll('.portfolio-item'),
+            portfolioDotes = slider.querySelector('.portfolio-dots');
+
+        let currentSlide = 0,
+            interval,
+            dot = slider.querySelectorAll('.dot');
+
+            const setDots = ()=>{
+                let li = '<li class="dot"></li>';
+                slide.forEach(()=>{ portfolioDotes.insertAdjacentHTML('beforeend',li);});  
+                dot = slider.querySelectorAll('.dot');
+                dot[0].classList.add('dot-active');     
+            };
+
+        const nextSlide = (elem, index, strClass) => {
+            elem[index].classList.add(strClass);
+        };
+        const prevSlide = (elem, index, strClass) => {
+            elem[index].classList.remove(strClass);
+        };
+
+        const autoSlide = () => {
+
+            prevSlide(slide, currentSlide, 'portfolio-item-active');
+            prevSlide(dot, currentSlide, 'dot-active');
+
+            currentSlide++;
+            if (currentSlide >= slide.length) { currentSlide = 0; }
+            nextSlide(slide, currentSlide, 'portfolio-item-active');
+            nextSlide(dot, currentSlide, 'dot-active');
+
+        };
+
+        const startSlide = (time = 3000) => {
+            interval = setInterval(autoSlide, time);
+        };
+
+
+        const stopSlide = () => {
+
+            clearInterval(interval);
+        };
+
+       
+        slider.addEventListener('click', (event) => {
+            event.preventDefault();
+
+            let target = event.target;
+
+           if(!target.matches('.dot, .portfolio-btn')){ return;}
+
+            prevSlide(slide, currentSlide, 'portfolio-item-active');
+            prevSlide(dot, currentSlide, 'dot-active');
+
+            if (target.matches('#arrow-right')) {
+                currentSlide++;
+            } else if (target.matches('#arrow-left')) {
+
+                currentSlide--;
+
+            } else if (target.matches('.dot')) {
+
+                dot.forEach((item, index) => {
+
+                    if (item === target) {
+                        currentSlide = index;
+                    }
+                });
+            }
+
+            if (currentSlide >= slide.length) {
+                currentSlide = 0;
+            } else if (currentSlide < 0) {
+                currentSlide = slide.length - 1;
+
+            }
+            nextSlide(slide, currentSlide, 'portfolio-item-active');
+            nextSlide(dot, currentSlide, 'dot-active');
+
+
+        });
+
+        slider.addEventListener('mouseover',(event)=>{
+                let target= event.target;
+            
+            if(target.matches('.portfolio-btn')||(target.matches('.dot'))){
+
+                stopSlide();
+            }
+
+        });
+        slider.addEventListener('mouseout',(event)=>{
+                let target= event.target;
+            
+            if(target.matches('.portfolio-btn')||(target.matches('.dot'))){
+
+                startSlide();
+            }
+
+        });
+
+        setDots();
+        startSlide(2000);
+
+
+    };
+
+    slider();
 
 
 
