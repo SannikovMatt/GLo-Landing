@@ -131,7 +131,7 @@ window.addEventListener('DOMContentLoaded', function () {
             let stopAnim;
             popup.style.display = 'block';
 
-            if (screen.width < 768) {return;}
+            if (screen.width < 768) { return; }
 
             const comeRight = () => {
                 if (counter >= 38) {
@@ -140,7 +140,7 @@ window.addEventListener('DOMContentLoaded', function () {
                 }
 
                 popupContent.style.left = counter + '%';
-                counter += (parseInt(popupContent.style.left) - counter) / 7 +1;
+                counter += (parseInt(popupContent.style.left) - counter) / 7 + 1;
 
                 stopAnim = requestAnimationFrame(comeRight);
             };
@@ -229,8 +229,8 @@ window.addEventListener('DOMContentLoaded', function () {
     //Слайдер
     const slider = () => {
 
-        
-        const slider = document.querySelector('.portfolio-content'),           
+
+        const slider = document.querySelector('.portfolio-content'),
             slide = slider.querySelectorAll('.portfolio-item'),
             portfolioDotes = slider.querySelector('.portfolio-dots');
 
@@ -238,12 +238,12 @@ window.addEventListener('DOMContentLoaded', function () {
             interval,
             dot = slider.querySelectorAll('.dot');
 
-            const setDots = ()=>{
-                let li = '<li class="dot"></li>';
-                slide.forEach(()=>{ portfolioDotes.insertAdjacentHTML('beforeend',li);});  
-                dot = slider.querySelectorAll('.dot');
-                dot[0].classList.add('dot-active');     
-            };
+        const setDots = () => {
+            let li = '<li class="dot"></li>';
+            slide.forEach(() => { portfolioDotes.insertAdjacentHTML('beforeend', li); });
+            dot = slider.querySelectorAll('.dot');
+            dot[0].classList.add('dot-active');
+        };
 
         const nextSlide = (elem, index, strClass) => {
             elem[index].classList.add(strClass);
@@ -274,13 +274,13 @@ window.addEventListener('DOMContentLoaded', function () {
             clearInterval(interval);
         };
 
-       
+
         slider.addEventListener('click', (event) => {
             event.preventDefault();
 
             let target = event.target;
 
-           if(!target.matches('.dot, .portfolio-btn')){ return;}
+            if (!target.matches('.dot, .portfolio-btn')) { return; }
 
             prevSlide(slide, currentSlide, 'portfolio-item-active');
             prevSlide(dot, currentSlide, 'dot-active');
@@ -313,19 +313,19 @@ window.addEventListener('DOMContentLoaded', function () {
 
         });
 
-        slider.addEventListener('mouseover',(event)=>{
-                let target= event.target;
-            
-            if(target.matches('.portfolio-btn')||(target.matches('.dot'))){
+        slider.addEventListener('mouseover', (event) => {
+            let target = event.target;
+
+            if (target.matches('.portfolio-btn') || (target.matches('.dot'))) {
 
                 stopSlide();
             }
 
         });
-        slider.addEventListener('mouseout',(event)=>{
-                let target= event.target;
-            
-            if(target.matches('.portfolio-btn')||(target.matches('.dot'))){
+        slider.addEventListener('mouseout', (event) => {
+            let target = event.target;
+
+            if (target.matches('.portfolio-btn') || (target.matches('.dot'))) {
 
                 startSlide();
             }
@@ -341,6 +341,66 @@ window.addEventListener('DOMContentLoaded', function () {
     slider();
 
 
+    //Команда 
+
+    const team = () => {
+
+        const command = document.querySelector('#command');
+
+        console.log(command);
+
+        command.addEventListener('mouseover', (e) => {
+
+            const target = e.target;
+
+
+            if (target.closest('.command__photo')) {
+                const img = target.closest('.command__photo'),
+                    mLeavePhoto = img.getAttribute('src');
+
+                img.src = img.dataset.img;
+
+                const onMLeave = () => {
+
+                    img.src = mLeavePhoto;
+                    img.removeEventListener('mouseleave', onMLeave);
+                };
+
+                img.addEventListener('mouseleave', onMLeave);
+
+            }
+
+
+        });
+
+
+    };
+
+    team();
+
+    //Калькулятор
+
+    const calculator = () => {
+
+        const calc = document.getElementById('calc');
+
+        calc.addEventListener('input', (e)=>{
+
+            let target = e.target;
+            //console.log('hi');
+            if(target.matches('.calc-item')){
+
+                target = target.closest('.calc-item');
+
+               target.value = target.value.replace(/[^0-9]/ ,'');
+            }
+
+
+        });
+
+    };
+
+    calculator();
 
 
 
