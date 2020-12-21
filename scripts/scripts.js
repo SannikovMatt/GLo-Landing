@@ -386,11 +386,9 @@ window.addEventListener('DOMContentLoaded', function () {
 
         calc.addEventListener('input', (e)=>{
 
-            let target = e.target;
+            let target = e.target.closest('.calc-item');
           
-            if(target.matches('.calc-item')){
-
-                target = target.closest('.calc-item');
+            if(target){             
 
                target.value = target.value.replace(/[^0-9]/ ,'');
             }
