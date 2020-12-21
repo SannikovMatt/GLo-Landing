@@ -387,7 +387,7 @@ window.addEventListener('DOMContentLoaded', function () {
         calc.addEventListener('input', (e)=>{
 
             let target = e.target;
-            //console.log('hi');
+          
             if(target.matches('.calc-item')){
 
                 target = target.closest('.calc-item');
