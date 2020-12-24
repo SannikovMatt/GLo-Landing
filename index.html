@@ -412,7 +412,96 @@
 	</div>
 </div>
 
-
+<script src="./scripts/validator.js"></script>
 <script src="./scripts/scripts.js"></script>
+
+<script>
+
+	
+
+	const validateMainForm = new Validator({
+
+		selector: '#form1',
+		pattern:{
+			name : /^[а-яА-Я ]+$/
+			
+		},
+		method:{
+
+			user_phone:[
+				['notEmpty'],
+				['pattern','phone']
+			],
+			user_email:[
+				['notEmpty'],
+				['pattern','email']
+			],
+			user_name:[
+				['notEmpty'],
+				['pattern','name']
+			],
+		}
+	}
+);
+	const validateForm2 = new Validator({
+
+		selector: '#form2',
+		pattern:{
+			name : /^[а-яА-Я ]+$/,
+			text : /^[а-яА-Я ]+$/
+			
+		},
+		method:{
+
+			user_phone:[
+				['notEmpty'],
+				['pattern','phone']
+			],
+			user_email:[
+				['notEmpty'],
+				['pattern','email']
+			],
+			user_name:[
+				['notEmpty'],
+				['pattern','name']
+			],
+			user_message:[
+				['notEmpty'],
+				['pattern','text']
+			],
+		}
+	}
+);
+	const validateForm3 = new Validator({
+
+		selector: '#form3',
+		pattern:{
+			name : /^[а-яА-Я ]+$/
+			
+		},
+		method:{
+
+			user_phone:[
+				['notEmpty'],
+				['pattern','phone']
+			],
+			user_email:[
+				['notEmpty'],
+				['pattern','email']
+			],
+			user_name:[
+				['notEmpty'],
+				['pattern','name']
+			],
+		}
+	}
+);
+
+
+	validateMainForm.init();
+	validateForm2.init();
+	validateForm3.init();
+
+</script>
 </body>
 </html>

@@ -127,6 +127,7 @@ window.addEventListener('DOMContentLoaded', function () {
             popupContent = popup.querySelector('.popup-content');
 
         const appearPopUp = () => {
+            popup.querySelectorAll('input').forEach(input=>input.value = '');
             let counter = 20;
             let stopAnim;
             popup.style.display = 'block';
