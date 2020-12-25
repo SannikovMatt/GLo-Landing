@@ -347,7 +347,6 @@ window.addEventListener('DOMContentLoaded', function () {
 
         const command = document.querySelector('#command');
 
-        console.log(command);
 
         command.addEventListener('mouseover', (e) => {
 
@@ -419,67 +418,178 @@ window.addEventListener('DOMContentLoaded', function () {
                 total = price * typeValue * squareValue * countValue * dayValue;
             }
 
-            let i = 0; 
+            let i = 0;
 
-            let stop = setInterval(()=>{
-               
+            let stop = setInterval(() => {
+
                 totalValue.textContent = i;
-                 i+= parseInt(total/20);               
-                if(i>=total || (i + total/20 > total )){
-                      totalValue.textContent = parseInt(total);
-                      clearInterval(stop);
-                       i=0;}
-            },20);
+                i += parseInt(total / 20);
+                if (i >= total || (i + total / 20 > total)) {
+                    totalValue.textContent = parseInt(total);
+                    clearInterval(stop);
+                    i = 0;
+                }
+            }, 20);
 
 
-            };
+        };
 
-            calc.addEventListener('change', (event) => {
-                const target = event.target;
+        calc.addEventListener('change', (event) => {
+            const target = event.target;
 
-                if ([calcType, calcSquare, calcDay, calcCount].includes(target)) {
+            if ([calcType, calcSquare, calcDay, calcCount].includes(target)) {
 
-                    countSum();
+                countSum();
+            }
+
+        });
+
+        calc.addEventListener('input', (e) => {
+
+            let target = e.target.closest('.calc-item');
+
+
+            if (target && !target.classList.contains('calc-type')) {
+
+
+                target.value = target.value.replace(/[^0-9]/, '');
+            }
+
+
+        });
+
+        calc.addEventListener('click', (e) => {
+
+            let target = e.target;
+
+
+            if (target.closest('.calc-type')) {
+
+                target = target.closest('.calc-type');
+
+
+            }
+
+        });
+
+    };
+
+    calculator(100);
+
+
+
+    //send-ajax - form
+
+    const sendForm = () => {
+
+        const errorMsg = 'Чтото пошло не так',
+            loadMsg = 'Загрузка...',
+            successMsg = 'Сообщение отправлено';
+
+        // const form = document.getElementById('form1');
+        const statusMsg = document.createElement('div');
+        statusMsg.style.color = 'white';
+
+
+        window.addEventListener('submit', (event) => {
+
+            let target = event.target;
+            console.log(target.id);
+
+            if (target.closest(`#${target.id}`)) {
+                let form = target.closest(`#${target.id}`);
+
+                console.log(form);
+                event.preventDefault();
+                form.appendChild(statusMsg);
+                statusMsg.classList.toggle('loader');
+
+                const formData = new FormData(form);
+
+                let body = {};
+
+                for (let val of formData.entries()) {
+
+                    body[val[0]] = val[1];
+                }
+                postData(body, () => {
+                    statusMsg.classList.toggle('loader');
+                    statusMsg.textContent = successMsg;
+                    form.reset();
+
+                }, (error) => {
+                    statusMsg.classList.toggle('loader');
+                    statusMsg.textContent = errorMsg;
+                    console.error(error);
+                });
+            }
+        });
+
+
+
+
+        const postData = (body, outputData, errorData) => {
+
+            const request = new XMLHttpRequest();
+            request.addEventListener('readystatechange', () => {
+                statusMsg.textContent = loadMsg;
+                if (request.readyState !== 4) {
+                    return;
+                }
+                if (request.status === 200) {
+                    outputData();
+
+
+                } else {
+
+                    errorData(request.status);
+
+
                 }
 
             });
 
-            calc.addEventListener('input', (e) => {
-
-                let target = e.target.closest('.calc-item');
-
-
-                if (target && !target.classList.contains('calc-type')) {
+            request.open('POST', './server.php');
+            request.setRequestHeader('Content-Type', 'aplication/json');
+            request.send(JSON.stringify(body));
+        };
 
 
-                    target.value = target.value.replace(/[^0-9]/, '');
+        const validation = () => {
+
+            document.addEventListener('input', (event) => {
+
+                let target = event.target;
+
+                if (!target.closest('form')) {
+                    return;                
+                }else{
+                    
+                   let  type = target.id.split('-')[1];
+
+                        
+                    if(type === 'message'){
+
+                        target.value = target.value.replace(/[A-Za-z]/, '');
+                    }else if(type === 'phone'){
+
+                        target.value = target.value.replace(/[^\+{,1}(\d+)$]/g , '');
+
+                    }else if(type === 'name'){
+
+                        target.value = target.value.replace(/[^а-я ]/gi, '');
+                    }
                 }
-
-
-            });
-
-            calc.addEventListener('click', (e) => {
-
-                let target = e.target;
-
-
-                if (target.closest('.calc-type')) {
-
-                    target = target.closest('.calc-type');
-
-
-                }
+                
 
             });
 
         };
+        validation();
 
-        calculator(100);
+    };
 
-
-
-
-
+    sendForm();
 
 
 
@@ -495,6 +605,13 @@ window.addEventListener('DOMContentLoaded', function () {
 
 
 
-    });
+
+
+
+
+
+
+
+});
 
 
