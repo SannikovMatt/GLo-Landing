@@ -418,6 +418,9 @@ window.addEventListener('DOMContentLoaded', function () {
                 total = price * typeValue * squareValue * countValue * dayValue;
             }
 
+
+
+            //Анимация для суммы при пересчете
             let i = 0;
 
             let stop = setInterval(() => {
@@ -448,29 +451,22 @@ window.addEventListener('DOMContentLoaded', function () {
 
             let target = e.target.closest('.calc-item');
 
-
             if (target && !target.classList.contains('calc-type')) {
-
-
                 target.value = target.value.replace(/[^0-9]/, '');
             }
 
 
         });
 
-        calc.addEventListener('click', (e) => {
 
-            let target = e.target;
+        //<<<<<<<<<<<УДАЛИТЬ
+        // calc.addEventListener('click', (e) => {
 
-
-            if (target.closest('.calc-type')) {
-
-                target = target.closest('.calc-type');
-
-
-            }
-
-        });
+        //     let target = e.target;
+        //     if (target.closest('.calc-type')) {
+        //         target = target.closest('.calc-type');
+        //     }
+        // });
 
     };
 
@@ -482,27 +478,25 @@ window.addEventListener('DOMContentLoaded', function () {
 
     const sendForm = () => {
 
-        const currentCondition=()=>{
 
 
-        }
-
-        const errorMsg = 'Чтото пошло не так',
+        const statusMsg = document.createElement('div'),
+            errorMsg = 'Чтото пошло не так',
             loadMsg = 'Загрузка...',
             successMsg = 'Сообщение отправлено';
 
-        // const form = document.getElementById('form1');
-        const statusMsg = document.createElement('div');
+
+
         statusMsg.style.color = 'white';
 
 
         window.addEventListener('submit', (event) => {
 
             let target = event.target;
-            
+
             //Проверям какую именно форму подтвердили.
             if (target.closest(`#${target.id}`)) {
-                let form = target.closest(`#${target.id}`);               
+                let form = target.closest(`#${target.id}`);
                 event.preventDefault();
 
                 //Добавляем div  для сообщений на страницу
@@ -510,45 +504,59 @@ window.addEventListener('DOMContentLoaded', function () {
 
                 //Анимация для ожидания ответа от сервера
                 statusMsg.classList.toggle('loader');
-                
 
+
+
+                const formData = new FormData(form);
                 let body = {};
+                for (let val of formData.entries()) {
 
-               //Вызываем метод который делает запрос к БД
-                postData(body, () => {
-                    statusMsg.classList.toggle('loader');
-                    statusMsg.textContent = successMsg;
-                    form.reset();
+                    body[val[0]] = val[1];
+                }
 
-                }, (error) => {
-                    statusMsg.classList.toggle('loader');
-                    statusMsg.textContent = errorMsg;
-                    console.error(error);
-                });
+
+                postData(body)
+                    .then(() => {
+                        statusMsg.classList.toggle('loader');
+                        statusMsg.textContent = successMsg;
+                        form.reset();
+                    }
+
+                    )
+                    .catch((error) => {
+                        statusMsg.classList.toggle('loader');
+                        statusMsg.textContent = errorMsg;
+                        console.error(error);
+                    })
             }
         });
 
 
 
 
-        const postData = (body, outputData, errorData) => {
+        const postData = (body) => {
 
-            const request = new XMLHttpRequest();
-            request.addEventListener('readystatechange', () => {
+            return new Promise((resolve, reject) => {
 
-                statusMsg.textContent = loadMsg;
-                if (request.readyState !== 4) {return;}
+                const request = new XMLHttpRequest();
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-Type', 'aplication/json');
+                request.send(JSON.stringify(body));
 
-                if (request.status === 200) {outputData();
-                } else {
-                    errorData(request.status);
-                }
+                //Обработчик ответа от базы
+                request.addEventListener('readystatechange', () => {
 
-            });
+                    statusMsg.textContent = loadMsg;
+                    if (request.readyState !== 4) { return; }
 
-            request.open('POST', './server.php');
-            request.setRequestHeader('Content-Type', 'aplication/json');
-            request.send(JSON.stringify(body));
+                    request.status === 200 ? resolve() : reject(request.status)
+                });
+
+
+
+            })
+
+
         };
 
 
@@ -559,26 +567,19 @@ window.addEventListener('DOMContentLoaded', function () {
                 let target = event.target;
 
                 if (!target.closest('form')) {
-                    return;                
-                }else{
-                    
-                   let  type = target.id.split('-')[1];
+                    return;
+                } else {
 
-                        
-                    if(type === 'message'){
+                    let type = target.id.split('-')[1];
 
+                    if (type === 'message') {
                         target.value = target.value.replace(/[A-Za-z]/, '[^\+{,1}(\d+)$]/g');
-                    }else if(type === 'phone'){
-
-                        target.value = target.value.replace(/[^\+{,1}(\d+)$]/g , '');
-
-                    }else if(type === 'name'){
-
+                    } else if (type === 'phone') {
+                        target.value = target.value.replace(/[^\+{,1}(\d+)$]/g, '');
+                    } else if (type === 'name') {
                         target.value = target.value.replace(/[^а-я ]/gi, '');
                     }
                 }
-                
-
             });
 
         };
