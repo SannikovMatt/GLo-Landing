@@ -482,6 +482,11 @@ window.addEventListener('DOMContentLoaded', function () {
 
     const sendForm = () => {
 
+        const currentCondition=()=>{
+
+
+        }
+
         const errorMsg = 'Чтото пошло не так',
             loadMsg = 'Загрузка...',
             successMsg = 'Сообщение отправлено';
@@ -494,24 +499,22 @@ window.addEventListener('DOMContentLoaded', function () {
         window.addEventListener('submit', (event) => {
 
             let target = event.target;
-            console.log(target.id);
-
+            
+            //Проверям какую именно форму подтвердили.
             if (target.closest(`#${target.id}`)) {
-                let form = target.closest(`#${target.id}`);
-
-                console.log(form);
+                let form = target.closest(`#${target.id}`);               
                 event.preventDefault();
-                form.appendChild(statusMsg);
-                statusMsg.classList.toggle('loader');
 
-                const formData = new FormData(form);
+                //Добавляем div  для сообщений на страницу
+                form.appendChild(statusMsg);
+
+                //Анимация для ожидания ответа от сервера
+                statusMsg.classList.toggle('loader');
+                
 
                 let body = {};
 
-                for (let val of formData.entries()) {
-
-                    body[val[0]] = val[1];
-                }
+               //Вызываем метод который делает запрос к БД
                 postData(body, () => {
                     statusMsg.classList.toggle('loader');
                     statusMsg.textContent = successMsg;
@@ -532,19 +535,13 @@ window.addEventListener('DOMContentLoaded', function () {
 
             const request = new XMLHttpRequest();
             request.addEventListener('readystatechange', () => {
+
                 statusMsg.textContent = loadMsg;
-                if (request.readyState !== 4) {
-                    return;
-                }
-                if (request.status === 200) {
-                    outputData();
+                if (request.readyState !== 4) {return;}
 
-
+                if (request.status === 200) {outputData();
                 } else {
-
                     errorData(request.status);
-
-
                 }
 
             });
@@ -570,7 +567,7 @@ window.addEventListener('DOMContentLoaded', function () {
                         
                     if(type === 'message'){
 
-                        target.value = target.value.replace(/[A-Za-z]/, '');
+                        target.value = target.value.replace(/[A-Za-z]/, '[^\+{,1}(\d+)$]/g');
                     }else if(type === 'phone'){
 
                         target.value = target.value.replace(/[^\+{,1}(\d+)$]/g , '');
