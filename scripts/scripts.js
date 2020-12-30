@@ -517,13 +517,14 @@ window.addEventListener('DOMContentLoaded', function () {
 
                 postData(body)
                     .then(() => {
+
+                        
                         statusMsg.classList.toggle('loader');
                         statusMsg.textContent = successMsg;
                         form.reset();
-                    }
+                    })
+                    .catch(error => {
 
-                    )
-                    .catch((error) => {
                         statusMsg.classList.toggle('loader');
                         statusMsg.textContent = errorMsg;
                         console.error(error);
@@ -536,26 +537,22 @@ window.addEventListener('DOMContentLoaded', function () {
 
         const postData = (body) => {
 
-            return new Promise((resolve, reject) => {
+            return fetch('./server.php', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'aplication/json'
+                },
+                body: JSON.stringify(body)
 
-                const request = new XMLHttpRequest();
-                request.open('POST', './server.php');
-                request.setRequestHeader('Content-Type', 'aplication/json');
-                request.send(JSON.stringify(body));
+            }).then(response => {
+                if (!response.ok) {
+                    console.log(response);
+                    throw new Error(response.status);
+                }
+               ;
+            });
 
-                //Обработчик ответа от базы
-                request.addEventListener('readystatechange', () => {
-
-                    statusMsg.textContent = loadMsg;
-                    if (request.readyState !== 4) { return; }
-
-                    request.status === 200 ? resolve() : reject(request.status)
-                });
-
-
-
-            })
-
+         
 
         };
 
