@@ -6,15 +6,22 @@ const sendForm = () => {
         errorMsg = 'Чтото пошло не так',
         loadMsg = 'Загрузка...',
         successMsg = 'Сообщение отправлено';
+    let isValid = false,
+        timeOut;
 
 
 
     statusMsg.style.color = 'white';
 
 
+
+
+
     window.addEventListener('submit', (event) => {
 
         let target = event.target;
+
+
 
         //Проверям какую именно форму подтвердили.
         if (target.closest(`#${target.id}`)) {
@@ -23,6 +30,17 @@ const sendForm = () => {
 
             //Добавляем div  для сообщений на страницу
             form.appendChild(statusMsg);
+
+
+            if (!isValidF(form)) {
+
+                if (timeOut) { clearTimeout(timeOut); }
+                timeOut = setTimeout(() => {
+                    statusMsg.textContent = '';
+                }, 3000);
+                return;
+            }
+
 
             //Анимация для ожидания ответа от сервера
             statusMsg.classList.toggle('loader');
@@ -36,18 +54,18 @@ const sendForm = () => {
                         'Content-Type': 'aplication/json'
                     },
                     body: JSON.stringify(body),
-                   // mode:'cors'
-        
+                    // mode:'cors'
+
                 }).then(response => {
                     if (!response.ok) {
-                        console.log(response);
+                        
                         throw new Error(response.status);
                     }
-                   ;
+
                 });
-        
-             
-        
+
+
+
             };
 
 
@@ -59,15 +77,16 @@ const sendForm = () => {
             }
 
 
+
             postData(body)
                 .then(() => {
 
-                    
+
                     statusMsg.classList.toggle('loader');
                     statusMsg.textContent = successMsg;
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         statusMsg.textContent = '';
-                    },5000)
+                    }, 5000);
                     form.reset();
                 })
                 .catch(error => {
@@ -75,37 +94,55 @@ const sendForm = () => {
                     statusMsg.classList.toggle('loader');
                     statusMsg.textContent = errorMsg;
                     console.error(error);
-                })
+                });
         }
     });
 
 
 
 
+    const isValidF = (form) => {
 
+        let inputs = form.querySelectorAll('input');
 
+        for (let target of inputs) {
+            let type = target.id.split('-')[1];
+            if (type === 'email') {
+                isValid = /[\w0-9.]+@\w+\.\w{0,6}/i.test(target.value);
+               
+                if (!isValid) {
+                    statusMsg.innerHTML = 'Заявка не отправлена <br/>Проверьте корректность емаил..';
+                    return isValid;
+                }
+            }
+        }
+        return isValid;
+    };
 
     const validation = () => {
-
-        document.addEventListener('input', (event) => {
+        const validate = (event) => {
 
             let target = event.target;
 
             if (!target.closest('form')) {
                 return;
-            } else {
-
-                let type = target.id.split('-')[1];
-
-                if (type === 'message') {
-                    target.value = target.value.replace(/[A-Za-z]/, '');
-                } else if (type === 'phone') {
-                    target.value = target.value.replace(/[^\+{,1}(\d+)$]/g, '');
-                } else if (type === 'name') {
-                    target.value = target.value.replace(/[^а-я ]/gi, '');
-                }
             }
-        });
+            let type = target.id.split('-')[1];
+
+            if (type === 'message') {
+                target.value = target.value.replace(/[A-Za-z]/, '');
+            } else if (type === 'phone') {
+                target.value = target.value.replace(/[^\+{,1}(\d+)$]/g, '');
+            } else if (type === 'name') {
+                target.value = target.value.replace(/[^а-я ]/gi, '');
+            } else if (type === 'email') {
+                target.value = target.value.replace(/[^@.0-9\w]/gi, '');
+            }
+
+        };
+
+        document.addEventListener('input', validate);
+
 
     };
     validation();

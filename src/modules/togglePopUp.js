@@ -6,20 +6,20 @@ const togglePopUp = () => {
         popupContent = popup.querySelector('.popup-content');
 
     const appearPopUp = () => {
-        let counter = 20;
+        let counter = 1;
         let stopAnim;
         popup.style.display = 'block';
 
         if (screen.width < 768) { return; }
 
         const comeRight = () => {
-            if (counter >= 38) {
+            if (counter >= 10) {
                 cancelAnimationFrame(stopAnim);
                 return;
             }
 
-            popupContent.style.left = counter + '%';
-            counter += (parseInt(popupContent.style.left) - counter) / 7 + 1;
+            popupContent.style.top = counter + '%';
+            counter += (parseInt(popupContent.style.top) - counter) / 7 + 1;
 
             stopAnim = requestAnimationFrame(comeRight);
         };
