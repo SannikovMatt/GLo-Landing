@@ -40,12 +40,14 @@ const toggleMenu = () => {
             if (target.closest('.close-btn')) {
                 handlerMenu();
             } else if (target.closest('a')) {
+                
                 if (menu.classList.contains('active-menu')) { handlerMenu(); }
                 reachTo(target.closest('a'));
             }
         }
         //Плавный скрол для кнопки вне модального меню
         if (target.closest('main a[href="#service-block"]')) {
+            e.preventDefault();
             if (menu.classList.contains('active-menu')) { handlerMenu(); }
             reachTo(target.closest('a'));
         }
