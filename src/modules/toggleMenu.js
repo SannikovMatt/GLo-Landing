@@ -11,37 +11,9 @@ const toggleMenu = () => {
         //Функция для скролла к елементам
         const reachTo = (elm) => {
             const id = elm.getAttribute("href"),
-                elem = document.querySelector(`${id}`),
-                  scroll = document.documentElement.scrollTop;
-
-                
-            let stopScroll,
-                counter = 0,
-                i =0;
-                
-               
-
-            function startMove() {               
-               
-
-                if(i === 1){
-                    document.documentElement.scrollTop =  scroll;
-                }
-
-                if (document.documentElement.scrollTop >= elem.offsetTop || 
-                    (window.innerHeight + window.scrollY) >= document.body.offsetHeight) {              
-                    cancelAnimationFrame(stopScroll);
-                    return;
-                }
-
-                document.documentElement.scrollTop = counter;
-                counter += parseInt((elem.offsetTop - counter) / 7 + 1);
-                stopScroll = requestAnimationFrame(startMove);
-                i++;
-      
-                
-            }
-            startMove();
+                elem = document.querySelector(`${id}`);
+                elem.scrollIntoView({behavior:"smooth"});
+       
         };
 
 
@@ -64,7 +36,7 @@ const toggleMenu = () => {
         }
         //Плавный скрол по разделам меню
         if (target.closest('menu')) {
-
+            e.preventDefault();
             if (target.closest('.close-btn')) {
                 handlerMenu();
             } else if (target.closest('a')) {
